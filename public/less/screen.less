@@ -1,0 +1,179 @@
+// CSS Reset
+@import "reset.less";
+
+// Core variables and mixins
+@import "variables.less"; // Modify this for custom colors, font-sizes, etc
+@import "mixins.less";
+
+// Grid system and page structure
+@import "scaffolding.less";
+@import "grid.less";
+
+// Base CSS
+@import "type.less";
+@import "font-awesome.less";
+
+@import "utilities.less";
+
+@import "buttons.less";
+@import "progress-bars.less";
+
+@media (max-width: 320px) {
+	.container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
+}
+
+@media (orientation: landscape) {
+	canvas {
+		width: 320px;
+		left: 0;
+	}
+}
+
+input[type="file"] {
+	display: none;
+}
+
+.share-box {
+	display: none;
+	position: absolute;
+	margin: 75% 0 0 50%;
+	top: -20px;
+	left: -100px;
+	width: 250px;
+}
+
+.locate {
+	display: inline-block;
+	width: 50px;
+	height: 50px;
+}
+
+.share {
+	display: inline-block;
+	width: 200px;
+	color: @red;
+	background-color: @yellow;
+	font-family: @headerFontFamily;
+}
+
+canvas {
+	max-width: 100%;
+}
+
+.circle {
+	position: absolute;
+	margin: 50%;
+	left: -100px;
+	top: -100px;
+	text-align: center;
+}
+
+.top-half-circle {
+	display: block;
+	border-top-right-radius: 100px;
+	border-top-left-radius: 100px;
+	height: 70px;
+	width: 200px;
+	padding-top: 30px;
+	background-color: @yellow;
+	color: @red;
+}
+
+.bottom-half-circle {
+	display: block;
+	border-bottom-right-radius: 100px;
+	border-bottom-left-radius: 100px;
+	height: 80px;
+	width: 200px;
+	padding: 20px 0 0 0;
+	color: @white;
+
+	&:hover {
+		color: @white;
+		text-decoration: none;
+	}
+}
+
+.brand {
+  display: inline-block;
+  padding: 12px 20px;
+  font-size: 30px;
+  font-weight: 200;
+  line-height: 1;
+  font-family: @headerFontFamily;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.shutter {
+	position: absolute;
+	margin: 50%;
+	left: -50px;
+	top: -50px;
+	border-radius: 100px;
+	width: 100px;
+	height: 100px;
+	background-color: @purple;
+	color: @white;
+}
+
+#photo-canvas {
+	display: none;
+}
+
+.spinnerContainer {
+	position: absolute;
+	z-index: -1;
+	margin: 70% 0 0 50%;
+	left: -50px;
+	top: -50px;
+	text-align: center;
+	width: 100px;
+	height: 100px;
+}
+
+.caption {
+	display: none;
+	position: absolute;
+	height: 25%;
+	width: 100%;
+	left: 0;
+	background-color: @yellow;
+}
+
+.counter {
+	color: @red;
+}
+
+textarea {
+	background-color: @yellow;
+	border: none;
+	color: @purple;
+	height: 100%;
+}
+
+::-webkit-input-placeholder{
+	color: @purple;
+}
+
+.arrows {
+	display: none;
+	position: absolute;
+	top: -50px;
+	left: -12.5px;
+	margin: 30% 0 0 50%;
+	width: 25px;
+	height: 100px;
+	opacity: 0.5;
+}
