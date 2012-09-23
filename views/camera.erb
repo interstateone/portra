@@ -47,6 +47,7 @@
         var status = caption.val() == "" ? caption.attr('placeholder') : caption.val();
         counter.text(status.length + '/' + tweetLength);
       });
+      _gaq.push(['_trackEvent', 'Photos', 'Camera']);
     });
 
     caption.on('keyup', function () {
@@ -74,6 +75,7 @@
             postPhoto();
           });
         }
+        _gaq.push(['_trackEvent', 'Photos', 'Tweet']);
       }
     });
 
