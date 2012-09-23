@@ -85,7 +85,6 @@ GEM
     mime-types (1.19)
     multi_json (1.3.6)
     multipart-post (1.1.5)
-    newrelic_rpm (3.4.1)
     oauth (0.4.7)
     oauth-multipart (0.0.3)
       multipart-post
@@ -154,7 +153,6 @@ DEPENDENCIES
   guard-rspec
   json
   multipart-post
-  newrelic_rpm (= 3.4.1)
   oauth-multipart
   omniauth-twitter
   rack-cache

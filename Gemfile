@@ -18,7 +18,6 @@ gem 'json'
 gem 'dalli'
 gem 'rack-cache'
 gem 'rest-client', :require => 'rest_client'
-gem 'newrelic_rpm', "3.4.1"
 gem 'omniauth-twitter'
 gem 'oauth-multipart'
 gem 'multipart-post'
