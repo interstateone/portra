@@ -419,8 +419,8 @@ canvas{max-width:100%;}
 .shutter{position:absolute;display:block;margin:50%;left:-50px;top:-50px;border-radius:100px;width:100px;height:100px;background-color:#7a43b6;color:#ffffff;}
 #photo-canvas{display:none;}
 .spinnerContainer{position:absolute;z-index:-1;margin:70% 0 0 50%;left:-50px;top:-50px;text-align:center;width:100px;height:100px;}
-.caption{display:none;position:absolute;height:25%;width:100%;left:0;background-color:#ffb700;}
+.caption{display:none;position:absolute;height:25%;width:100%;left:0;}
 .counter{color:#ff0000;}
-textarea{background-color:#ffb700;border:none;color:#7a43b6;height:100%;}
+textarea{background-color:transparent;border:none;color:#7a43b6;height:100%;}
 ::-webkit-input-placeholder{color:#7a43b6;}
 .arrows{display:none;position:absolute;top:-50px;left:-12.5px;margin:30% 0 0 50%;width:25px;height:100px;opacity:0.5;}
