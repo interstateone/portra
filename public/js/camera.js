@@ -116,16 +116,12 @@
       };
     };
     f = function() {
-      var e, t, n, s, o, u;
+      var e, t;
       console.log("getting location");
-      n = void 0;
-      s = void 0;
-      t = void 0;
-      e = void 0;
-      u = this;
       navigator.geolocation.getCurrentPosition(function(e) {
-        n = e.coords.latitude;
-        return s = e.coords.longitude;
+        var t, n;
+        t = e.coords.latitude;
+        return n = e.coords.longitude;
       });
       (function(e) {
         switch (e.code) {
@@ -141,12 +137,12 @@
       });
       e = r[0].toDataURL();
       console.log("posting status");
-      o = i.val() === "" ? i.attr("placeholder") : i.val();
+      t = i.val() === "" ? i.attr("placeholder") : i.val();
       return $.post("/tweet", {
-        status: o,
+        status: t,
         photo: e,
-        lat: n,
-        "long": s
+        lat: latitude,
+        "long": longitude
       }, function(e) {
         v.stop();
         g.html('<i class="icon-ok-sign" style="font-size: 300%; color: white;"></i>');

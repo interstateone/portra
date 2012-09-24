@@ -109,11 +109,6 @@ $ ->
 
   postPhoto = ->
     console.log "getting location"
-    latitude = undefined
-    longitude = undefined
-    endpoint = undefined
-    base64 = undefined
-    _this = this
     navigator.geolocation.getCurrentPosition (position) ->
       latitude = position.coords.latitude
       longitude = position.coords.longitude
