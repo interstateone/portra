@@ -11,7 +11,6 @@ $ ->
   counter = $(".counter")
   appPrompt = $(".prompt")
   spinnerTarget = $(".spinnerContainer")
-  spinner = undefined
   tweetLength = 0
   spinnerOptions =
     lines: 9 # The number of lines to draw
@@ -26,6 +25,7 @@ $ ->
     hwaccel: true # Whether to use hardware acceleration
     className: "spinner" # The CSS class to assign to the spinner
     zIndex: 2e9 # The z-index (defaults to 2000000000)
+  spinner = Spinner(spinnerOptions)
 
   if ("standalone" of window.navigator) and not window.navigator.standalone
     shutter.hide()
@@ -60,7 +60,7 @@ $ ->
         , "fast", ->
           $(this).hide()
           captionBox.hide()
-          spinner = new Spinner(spinnerOptions).spin(spinnerTarget[0])
+          spinner.spin(spinnerTarget[0])
           shutter.fadeOut("fast")
           arrows.hide()
           postPhoto()
@@ -68,7 +68,7 @@ $ ->
       _gaq.push ["_trackEvent", "Photos", "Tweet"]
 
   showSpinner = (event) ->
-    spinner = new Spinner(spinnerOptions).spin(spinnerTarget[0])
+    spinner.spin(spinnerTarget[0])
     shutter.animate
       marginTop: window.innerHeight
     , "swing", ->
@@ -141,7 +141,7 @@ $ ->
       spinner.stop()
       spinnerTarget.html "<i class=\"icon-ok-sign\" style=\"font-size: 300%; color: white;\"></i>"
       window.setTimeout (->
-        target.html ""
+        spinnerTarget.html ""
         resetPage()
       ), 1000
 
