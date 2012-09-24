@@ -7,6 +7,10 @@
   <textarea name="caption" value="Taken with Portra" placeholder="Taken with Portra"></textarea>
   <span class="counter"></span>
 </div>
+<div class="prompt">
+  <i class="icon-share"></i>
+  <p>Add Portra to your home screen</p>
+</div>
 <div id="share-path"></div>
 <script>
   $(function () {
@@ -20,6 +24,7 @@
         caption = $('textarea'),
         captionBox = $('.caption'),
         counter = $('.counter'),
+        appPrompt = $('.prompt'),
         spinner,
         tweetLength = 0,
         spinnerOptions = {
@@ -38,6 +43,10 @@
         },
         target = $('.spinnerContainer');
 
+    if (("standalone" in window.navigator) && !window.navigator.standalone) {
+      shutter.hide();
+      appPrompt.show();
+    }
 
     shutter.on('touchend', function (event) {
       camera.trigger('click');
