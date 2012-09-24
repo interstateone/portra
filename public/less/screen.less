@@ -55,14 +55,6 @@ input[type="file"] {
 	height: 50px;
 }
 
-.share {
-	display: inline-block;
-	width: 200px;
-	color: @red;
-	background-color: @yellow;
-	font-family: @headerFontFamily;
-}
-
 canvas {
 	max-width: 100%;
 }
@@ -152,7 +144,6 @@ canvas {
 
 .spinnerContainer {
 	position: absolute;
-	z-index: -1;
 	margin: 70% 0 0 50%;
 	left: -50px;
 	top: -50px;
@@ -167,7 +158,6 @@ canvas {
 	height: 25%;
 	width: 100%;
 	left: 0;
-	background-color: @yellow;
 }
 
 .counter {
@@ -175,6 +165,7 @@ canvas {
 }
 
 textarea {
+	-webkit-appearance: none;
 	background-color: transparent;
 	border: none;
 	color: @purple;
