@@ -96,14 +96,13 @@ $ ->
       ctx.clearRect(0, 0, cvs.width, cvs.height)
       ctx.drawImage(img, 0, 0, cvs.width, cvs.height)
       Caman "#photo-canvas", ->
-        @curves(["rgb"], [0, 0], [100, 80], [210, 245], [255, 255])
-          .exposure(10)
-          .saturation(-8)
-          .colorize(255, 200, 0, 5)
+        @.exposure(10)
+          .saturation(10)
+          .colorize(255, 200, 0, 10)
           .noise(1)
-          .vignette("40%", 18)
+          .vignette("40%", 20)
           .render ->
-            spinner.stop()
+            spinner.stop();
             shutter.prop("disabled", false)
             captionBox.show()
             arrows.show()

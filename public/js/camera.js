@@ -115,57 +115,56 @@
         });
       };
     };
-    postPhoto = function() {
-      var base64, endpoint, latitude, longitude, status, _this;
+    f = function() {
+      var e, t, n, s, o, u;
       console.log("getting location");
-      latitude = void 0;
-      longitude = void 0;
-      endpoint = void 0;
-      base64 = void 0;
-      _this = this;
-      navigator.geolocation.getCurrentPosition(function(position) {
-        latitude = position.coords.latitude;
-        return longitude = position.coords.longitude;
+      n = void 0;
+      s = void 0;
+      t = void 0;
+      e = void 0;
+      u = this;
+      navigator.geolocation.getCurrentPosition(function(e) {
+        n = e.coords.latitude;
+        return s = e.coords.longitude;
       });
-      (function(error) {
-        switch (error.code) {
-          case error.TIMEOUT:
-            return console.log("Geolocation error: Timeout");
-          case error.POSITION_UNAVAILABLE:
-            return console.log("Geolocation error: Position unavailable");
-          case error.PERMISSION_DENIED:
-            return console.log("Geolocation error: Permission denied");
-          case error.UNKNOWN_ERROR:
-            return console.log("Geolocation error: Unknown error");
+      (function(e) {
+        switch (e.code) {
+         case e.TIMEOUT:
+          return console.log("Geolocation error: Timeout");
+         case e.POSITION_UNAVAILABLE:
+          return console.log("Geolocation error: Position unavailable");
+         case e.PERMISSION_DENIED:
+          return console.log("Geolocation error: Permission denied");
+         case e.UNKNOWN_ERROR:
+          return console.log("Geolocation error: Unknown error");
         }
       });
-      base64 = canvas[0].toDataURL();
+      e = r[0].toDataURL();
       console.log("posting status");
-      status = (caption.val() === "" ? caption.attr("placeholder") : caption.val());
+      o = i.val() === "" ? i.attr("placeholder") : i.val();
       return $.post("/tweet", {
-        status: status,
-        photo: base64,
-        lat: latitude,
-        long: longitude
-      }, function(data) {
-        spinner.stop();
-        spinnerTarget.html("<i class=\"icon-ok-sign\" style=\"font-size: 300%; color: white;\"></i>");
-        return window.setTimeout((function() {
-          target.html("");
-          return resetPage();
-        }), 1000);
+        status: o,
+        photo: e,
+        lat: n,
+        "long": s
+      }, function(e) {
+        v.stop();
+        g.html('<i class="icon-ok-sign" style="font-size: 300%; color: white;"></i>');
+        return window.setTimeout(function() {
+          g.html("");
+          return l();
+        }, 1e3);
       });
     };
-    return resetPage = function() {
-      shutter.fadeIn("fast");
-      shutter.animate({
+    return l = function() {
+      d.fadeIn("fast");
+      d.animate({
         marginTop: "50%"
       });
-      canvas.css("margin-top", "0px");
-      captionBox.hide();
-      caption.val("");
-      return camera.val("");
+      r.css("margin-top", "0px");
+      s.hide();
+      i.val("");
+      return n.val("");
     };
   });
-
 }).call(this);
