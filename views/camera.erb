@@ -94,8 +94,22 @@
       var img = new Image();
       img.src = event.target.result;
       img.onload = function () {
-        cvs.width = img.width;
-        cvs.height = img.height;
+        var ratio = 1,
+          maxWidth = 1000
+          maxHeight = 1000;
+
+        if (img.width > img.height) {
+          if (img.width > maxWidth) {
+            cvs.height = maxWidth / img.width * img.height;
+            cvs.width = maxWidth;
+          }
+        } else {
+          if (img.height > maxHeight) {
+            cvs.width = maxHeight / img.height * img.width;
+            cvs.height = maxHeight;
+          }
+        }
+
         ctx.clearRect(0, 0, cvs.width, cvs.height);
         ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
 
