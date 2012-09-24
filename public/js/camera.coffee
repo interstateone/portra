@@ -13,18 +13,12 @@ $ ->
   spinnerTarget = $(".spinnerContainer")
   tweetLength = 0
   spinnerOptions =
-    lines: 9 # The number of lines to draw
-    length: 11 # The length of each line
-    width: 4 # The line thickness
-    radius: 12 # The radius of the inner circle
-    corners: 1 # Corner roundness (0..1)
-    rotate: 0 # The rotation offset
-    color: "#FFF" # #rgb or #rrggbb
-    speed: 1.2 # Rounds per second
-    trail: 10 # Afterglow percentage
-    hwaccel: true # Whether to use hardware acceleration
-    className: "spinner" # The CSS class to assign to the spinner
-    zIndex: 2e9 # The z-index (defaults to 2000000000)
+    lines: 12
+    length: 11
+    width: 4
+    radius: 12
+    color: "#FFF"
+    hwaccel: true
   spinner = Spinner(spinnerOptions)
 
   if ("standalone" of window.navigator) and not window.navigator.standalone

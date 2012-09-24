@@ -16,18 +16,12 @@
     g = $(".spinnerContainer");
     y = 0;
     m = {
-      lines: 9,
+      lines: 12,
       length: 11,
       width: 4,
       radius: 12,
-      corners: 1,
-      rotate: 0,
       color: "#FFF",
-      speed: 1.2,
-      trail: 10,
-      hwaccel: !0,
-      className: "spinner",
-      zIndex: 2e9
+      hwaccel: !0
     };
     v = Spinner(m);
     if ("standalone" in window.navigator && !window.navigator.standalone) {
