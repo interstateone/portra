@@ -1,226 +1,175 @@
-/*global Caman: true, exports: true */
+$(function () {
+    var camera = $('input[type="file"]'),
+        shutter = $('.shutter'),
+        canvas = $('canvas'),
+        arrows = $('.arrows'),
+        shareBox = $('.share-box'),
+        share = $('.share'),
+        locateButton = $('.locate'),
+        caption = $('textarea'),
+        captionBox = $('.caption'),
+        counter = $('.counter'),
+        appPrompt = $('.prompt'),
+        spinner,
+        tweetLength = 0,
+        spinnerOptions = {
+          lines: 9, // The number of lines to draw
+          length: 11, // The length of each line
+          width: 4, // The line thickness
+          radius: 12, // The radius of the inner circle
+          corners: 1, // Corner roundness (0..1)
+          rotate: 0, // The rotation offset
+          color: '#FFF', // #rgb or #rrggbb
+          speed: 1.2, // Rounds per second
+          trail: 10, // Afterglow percentage
+          hwaccel: true, // Whether to use hardware acceleration
+          className: 'spinner', // The CSS class to assign to the spinner
+          zIndex: 2e9, // The z-index (defaults to 2000000000)
+        },
+        target = $('.spinnerContainer');
 
-/*
- * NodeJS compatibility
- */
-if (!Caman && typeof exports == "object") {
-	var Caman = {manip:{}};
-	exports.plugins = Caman.manip;
-}
-
-(function (Caman) {
-
-  var vignetteFilters = {
-    brightness: function (rgba, amt, opts) {
-      rgba.r = rgba.r - (rgba.r * amt * opts.strength);
-      rgba.g = rgba.g - (rgba.g * amt * opts.strength);
-      rgba.b = rgba.b - (rgba.b * amt * opts.strength);
-      
-      return rgba;
-    },
-    
-    gamma: function (rgba, amt, opts) {
-      rgba.r = Math.pow(rgba.r / 255, Math.max(10 * amt * opts.strength, 1)) * 255;
-      rgba.g = Math.pow(rgba.g / 255, Math.max(10 * amt * opts.strength, 1)) * 255;
-      rgba.b = Math.pow(rgba.b / 255, Math.max(10 * amt * opts.strength, 1)) * 255;
-      
-      return rgba;
-    },
-    
-    colorize: function (rgba, amt, opts) {
-      rgba.r -= (rgba.r - opts.color.r) * amt;
-      rgba.g -= (rgba.g - opts.color.g) * amt;
-      rgba.b -= (rgba.b - opts.color.b) * amt;
-      
-      return rgba;
+    if (("standalone" in window.navigator) && !window.navigator.standalone) {
+      shutter.hide();
+      appPrompt.show();
     }
-  };
-  
-  /*
-   * Legacy vignette function. Creates a circular vignette and uses
-   * gamma adjustments to darken.
-   *
-   * If size is a string and ends with %, its a percentage. Otherwise,
-   * its an absolute number of pixels.
-   */
-  Caman.vignette = function (size, strength) {
-    var center, start, end, loc, dist, div, bezier;
 
-    if (typeof size === "string" && size.substr(-1) == "%") {
-      if (this.dimensions.height > this.dimensions.width) {
-        size = this.dimensions.width * (Number(size.substr(0, size.length - 1)) / 100);
-      } else {
-        size = this.dimensions.height * (Number(size.substr(0, size.length - 1)) / 100);
-      }
-    }
-    
-    if (!strength) {
-      strength = 0.6;
-    } else {
-      strength /= 100;
-    }
-    
-    center = [(this.dimensions.width / 2), (this.dimensions.height / 2)];
-    
-    // start = darkest part
-    start = Math.sqrt(Math.pow(center[0], 2) + Math.pow(center[1], 2)); // corner to center dist
-    
-    // end = lightest part (0 vignette)
-    end = start - size;
-    
-    bezier = Caman.bezier([0, 1], [30, 30], [70, 60], [100, 80]);
-    return this.process('vignette', function (rgba) {
-      // current pixel coordinates
-      loc = this.locationXY();
-      
-      // distance between center of image and current pixel
-      dist = Math.sqrt(Math.pow(loc.x - data.center[0], 2) + Math.pow(loc.y - data.center[1], 2));
-      
-      if (dist > data.end) {
-        // % of vignette
-        div = Math.max(1, ((data.bezier[Math.round(((dist - data.end) / data.size) * 100)]/10) * strength));
-        
-        // Use gamma to adjust the vignette - much better results
-        rgba.r = Math.pow(rgba.r / 255, div) * 255;
-	      rgba.g = Math.pow(rgba.g / 255, div) * 255;
-	      rgba.b = Math.pow(rgba.b / 255, div) * 255;
-      }
-      
-      return rgba;
+    shutter.on('touchend', function (event) {
+      camera.trigger('click');
+      $.get('/twitter_config', function (data) {
+        tweetLength = 140 - parseInt($.parseJSON(data).characters_reserved_per_media, 10);
+        caption.attr('maxLength', tweetLength);
+        var status = caption.val() == "" ? caption.attr('placeholder') : caption.val();
+        counter.text(status.length + '/' + tweetLength);
+      });
+      _gaq.push(['_trackEvent', 'Photos', 'Camera']);
     });
-  };
-  
-  /*
-   * Creates a rectangular vignette with rounded corners of a given radius.
-   *
-   * Options:
-   *    size: width and height of the rectangular region; e.g. {width: 300, height: 400}
-   *    strength: how strong should the vignette effect be?; default = 50
-   *    cornerRadius: radius of the rounded corners; default = 0
-   *    method: brightness, gamma, colorize, blur (not implemented); default = brightness
-   *    color: only used if method is colorize; default = #000000
-   */
-  Caman.rectangularVignette = function (opts) {
-    var defaults = {
-      strength: 50,
-      cornerRadius: 0,
-      method: 'brightness',
-      color: {r: 0, g: 0, b: 0}
+
+    caption.on('keyup', function () {
+      var status = caption.val() == "" ? caption.attr('placeholder') : caption.val();
+      counter.text(status.length + '/' + tweetLength);
+    });
+
+    camera.on('change', function (event) {
+      var photo = this.files[0];
+      var reader = new FileReader();
+      reader.onload = showSpinner;
+      reader.readAsDataURL(photo);
+    });
+
+    $('body').hammer().bind('swipe', function (event) {
+      if (event.direction == 'up') {
+        console.log('swiped up');
+        if (canvas.is(':visible')) {
+          canvas.animate({marginTop: "-2000px"}, 'fast', function () {
+            $(this).hide();
+            captionBox.hide();
+            spinner = new Spinner(spinnerOptions).spin(target[0]);
+            shutter.fadeOut('fast');
+            arrows.hide();
+            postPhoto();
+          });
+        }
+        _gaq.push(['_trackEvent', 'Photos', 'Tweet']);
+      }
+    });
+
+    var showSpinner = function (event) {
+      spinner = new Spinner(spinnerOptions).spin(target[0]);
+      shutter.animate({marginTop: window.innerHeight}, 'swing', function () {
+        populateCanvas(event);
+      });
     };
-    
-    opts = Caman.extend(defaults, opts);
-    
-    if (!opts.size) {
-      return this;
-    } else if (typeof opts.size === "string") {
-      // Percentage
-      var percent = parseInt(opts.size, 10) / 100;
-      opts.size = {
-        width: this.dimensions.width * percent,
-        height: this.dimensions.height * percent
-      };
-    } else if (typeof opts.size === "object") {
-      if (typeof opts.size.width === "string") {
-        opts.size.width = this.dimensions.width * (parseInt(opts.size.width, 10) / 100);
-      }
-      
-      if (typeof opts.size.height === "string") {
-        opts.size.height = this.dimensions.height * (parseInt(opts.size.height, 10) / 100);
-      }
-    } else if (typeof opts.size === "number") {
-      var size = opts.size;
-      opts.size = {
-        width: size,
-        height: size
+
+    var populateCanvas = function (event) {
+      shutter.prop('disabled', true);
+      canvas.show();
+      var cvs = canvas[0];
+      var ctx = cvs.getContext('2d');
+      var img = new Image();
+      img.src = event.target.result;
+      img.onload = function () {
+        var ratio = 1,
+          maxWidth = 1000
+          maxHeight = 1000;
+
+        if (img.width > img.height) {
+          if (img.width > maxWidth) {
+            cvs.height = maxWidth / img.width * img.height;
+            cvs.width = maxWidth;
+          }
+        } else {
+          if (img.height > maxHeight) {
+            cvs.width = maxHeight / img.height * img.width;
+            cvs.height = maxHeight;
+          }
+        }
+
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+        ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
+
+        Caman('#photo-canvas', function () {
+          this.curves(['rgb'], [0, 0], [100, 80], [210, 245], [255, 255])
+              .exposure(10)
+              .saturation(-8)
+              .colorize(255, 200, 0, 5)
+              .noise(1)
+              .vignette('40%', 18)
+              .render( function () {
+                spinner.stop();
+                shutter.prop('disabled', false);
+                captionBox.show();
+                arrows.show();
+              });
+        });
       };
     }
-    
-    if (typeof opts.cornerRadius === "string") {
-      // Variable corner radius
-      opts.cornerRadius = (opts.size.width / 2) * (parseInt(opts.cornerRadius, 10) / 100);
-    }
-    
-    opts.strength /= 100;
-    
-    // Since pixels are discreet, force size to be an int
-    opts.size.width = Math.floor(opts.size.width);
-    opts.size.height = Math.floor(opts.size.height);
-    opts.image = {
-      width: this.dimensions.width,
-      height: this.dimensions.height
+
+    var postPhoto = function() {
+      console.log('getting location');
+      var latitude, longitude, endpoint, base64, _this = this;
+      navigator.geolocation.getCurrentPosition( function (position) {
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+      });
+      (function(error) {
+        switch (error.code) {
+          case error.TIMEOUT:
+            return console.log('Geolocation error: Timeout');
+          case error.POSITION_UNAVAILABLE:
+            return console.log('Geolocation error: Position unavailable');
+          case error.PERMISSION_DENIED:
+            return console.log('Geolocation error: Permission denied');
+          case error.UNKNOWN_ERROR:
+            return console.log('Geolocation error: Unknown error');
+        }
+      });
+      base64 = canvas[0].toDataURL();
+      console.log('posting status');
+      var status = caption.val() == "" ? caption.attr('placeholder') : caption.val();
+      $.post('/tweet',
+            {
+              'status': status,
+              'photo': base64,
+              'lat': latitude,
+              'long': longitude
+            },
+            function () {
+              spinner.stop();
+              target.html('<i class="icon-ok-sign" style="font-size: 300%; color: white;"></i>');
+              window.setTimeout(function () {
+                target.html('');
+                resetPage();
+              }, 1000);
+            }
+      );
     };
-    
-    if (opts.method == "colorize" && typeof opts.color === "string") {
-      opts.color = Caman.hex_to_rgb(opts.color);
-    }
-    
-    // Generate useful rectangle dimensions
-    opts.coords = {};
-    opts.coords.left = (this.dimensions.width - opts.size.width) / 2;
-    opts.coords.right = this.dimensions.width - opts.coords.left;
-    opts.coords.bottom = (this.dimensions.height - opts.size.height) / 2;
-    opts.coords.top = this.dimensions.height - opts.coords.bottom;
-    
-    // Important rounded corner info
-    // Order is top left corner moving clockwise around rectangle
-    opts.corners = [
-      {x: opts.coords.left + opts.cornerRadius, y: opts.coords.top - opts.cornerRadius},
-      {x: opts.coords.right - opts.cornerRadius, y: opts.coords.top - opts.cornerRadius},
-      {x: opts.coords.right - opts.cornerRadius, y: opts.coords.bottom + opts.cornerRadius},
-      {x: opts.coords.left + opts.cornerRadius, y: opts.coords.bottom + opts.cornerRadius}
-    ];
-    
-    opts.maxDist = Caman.distance(0, 0, opts.corners[3].x, opts.corners[3].y) - opts.cornerRadius;
 
-    var loc, amt, radialDist;
-    return this.process('rectangularVignette', function (rgba) {
-      loc = this.locationXY();
-
-      // Trivial rejects
-      if ((loc.x > opts.corners[0].x && loc.x < opts.corners[1].x) && (loc.y > opts.coords.bottom && loc.y < opts.coords.top)) {
-        return rgba;
-      } else if ((loc.x > opts.coords.left && loc.x < opts.coords.right) && (loc.y > opts.corners[3].y && loc.y < opts.corners[2].y)) {
-        return rgba;
-      }
-      
-      // Need to figure out which section we're in. First, the trivial ones:
-      if (loc.x > opts.corners[0].x && loc.x < opts.corners[1].x && loc.y > opts.coords.top) {
-        // top-middle section
-        amt = (loc.y - opts.coords.top) / opts.maxDist;
-      } else if (loc.y > opts.corners[2].y && loc.y < opts.corners[1].y && loc.x > opts.coords.right) {
-        // right-middle section
-        amt = (loc.x - opts.coords.right) / opts.maxDist;
-      } else if (loc.x > opts.corners[0].x && loc.x < opts.corners[1].x && loc.y < opts.coords.bottom) {
-        // bottom-middle section
-        amt = (opts.coords.bottom - loc.y) / opts.maxDist;
-      } else if (loc.y > opts.corners[2].y && loc.y < opts.corners[1].y && loc.x < opts.coords.left) {
-        // left-middle section
-        amt = (opts.coords.left - loc.x) / opts.maxDist;
-      } else if (loc.x <= opts.corners[0].x && loc.y >= opts.corners[0].y) {
-        // top-left corner
-        radialDist = Caman.distance(loc.x, loc.y, opts.corners[0].x, opts.corners[0].y);
-        amt = (radialDist - opts.cornerRadius) / opts.maxDist;
-      } else if (loc.x >= opts.corners[1].x && loc.y >= opts.corners[1].y) {
-        // top-right corner
-        radialDist = Caman.distance(loc.x, loc.y, opts.corners[1].x, opts.corners[1].y);
-        amt = (radialDist - opts.cornerRadius) / opts.maxDist;
-      } else if (loc.x >= opts.corners[2].x && loc.y <= opts.corners[2].y) {
-        // bottom-right corner
-        radialDist = Caman.distance(loc.x, loc.y, opts.corners[2].x, opts.corners[2].y);
-        amt = (radialDist - opts.cornerRadius) / opts.maxDist;
-      } else if (loc.x <= opts.corners[3].x && loc.y <= opts.corners[3].y) {
-        // bottom-left corner
-        radialDist = Caman.distance(loc.x, loc.y, opts.corners[3].x, opts.corners[3].y);
-        amt = (radialDist - opts.cornerRadius) / opts.maxDist;
-      }
-      
-      if (amt < 0) {
-        // Inside of rounded corner
-        return rgba;
-      }
-      
-      return vignetteFilters[opts.method](rgba, amt, opts);
-    });
-  };
-
-}(Caman));
+    var resetPage = function () {
+      shutter.fadeIn('fast');
+      shutter.animate({marginTop: '50%'});
+      canvas.css('margin-top', '0px');
+      captionBox.hide();
+      caption.val('');
+      camera.val('');
+    };
+  });

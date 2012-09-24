@@ -116,6 +116,14 @@ class App < Sinatra::Base
     return access_token
   end
 
+  def versioned_stylesheet(stylesheet)
+    "/css/#{stylesheet}.css?" + File.mtime(File.join("public/css", "#{stylesheet}.css")).to_i.to_s
+  end
+
+  def versioned_javascript(js)
+    "/js/#{js}.js?" + File.mtime(File.join("public/js", "#{js}.js")).to_i.to_s
+  end
+
   # Routes #####################################################################
 
   before do
