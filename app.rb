@@ -93,6 +93,10 @@ class App < Sinatra::Base
     end
   end
 
+  def ios6_iphone_browser?
+    return /(iPhone.OS.6)/.match(request.env["HTTP_USER_AGENT"])
+  end
+
   def prepare_access_token(oauth_token, oauth_token_secret)
     if ENV['RACK_ENV'] == 'production'
       consumer_key = ENV['TWITTER_KEY'] || settings.twitter_key
@@ -115,7 +119,10 @@ class App < Sinatra::Base
   # Routes #####################################################################
 
   before do
-    # redirect non-iOS 6 browsers
+    # redirect non-'iPhone with iOS 6' browsers
+    unless ios6_iphone_browser? or request.path_info == '/about'
+      redirect '/about'
+    end
   end
 
   get '/' do
@@ -179,6 +186,10 @@ class App < Sinatra::Base
     login_required
     access_token = prepare_access_token(current_user.token, current_user.secret)
     access_token.get('https://api.twitter.com/1.1/help/configuration.json').body
+  end
+
+  get '/about' do
+    erb :about
   end
 
 end

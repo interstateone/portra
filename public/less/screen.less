@@ -116,8 +116,26 @@ canvas {
   }
 }
 
+.prompt {
+	display: none;
+	height: 100%;
+	width: 100%;
+	z-index: 100;
+	background-color: @yellow;
+	color: @purple;
+	vertical-align: middle;
+	padding-top: 50%;
+	text-align: center;
+
+	i {
+		margin-bottom: 20%;
+		font-size: 300%;
+	}
+}
+
 .shutter {
 	position: absolute;
+	display: block;
 	margin: 50%;
 	left: -50px;
 	top: -50px;
