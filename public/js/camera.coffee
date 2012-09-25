@@ -12,6 +12,7 @@ $ ->
   appPrompt = $(".prompt")
   spinnerTarget = $(".spinnerContainer")
   tweetLength = 0
+  type = undefined
   spinnerOptions =
     lines: 12
     length: 11
@@ -19,13 +20,13 @@ $ ->
     radius: 12
     color: "#FFF"
     hwaccel: true
-  spinner = Spinner(spinnerOptions)
+  spinner = new Spinner(spinnerOptions)
 
   if ("standalone" of window.navigator) and not window.navigator.standalone
     shutter.hide()
     appPrompt.show()
 
-  shutter.on "touchend", (event) ->
+  shutter.on "touchend", ->
     camera.trigger("click")
     $.get "/twitter_config", (data) ->
       tweetLength = 140 - parseInt($.parseJSON(data).characters_reserved_per_media, 10)
@@ -39,8 +40,9 @@ $ ->
     status = if caption.val() is "" then caption.attr("placeholder") else caption.val()
     counter.text(status.length + "/" + tweetLength)
 
-  camera.on "change", (event) ->
+  camera.on "change", ->
     photo = @files[0]
+    type = photo.type
     reader = new FileReader()
     reader.onload = captureOrientation
     reader.readAsBinaryString(photo)
@@ -62,20 +64,12 @@ $ ->
 
       _gaq.push ["_trackEvent", "Photos", "Tweet"]
 
-  showSpinner = (event) ->
-    spinner.spin(spinnerTarget[0])
-    shutter.animate
-      marginTop: window.innerHeight
-    , "swing", ->
-
   populateCanvas = (data, exif) ->
-    shutter.prop("disabled", true)
-    showSpinner()
     canvas.show()
     cvs = canvas[0]
     ctx = cvs.getContext("2d")
     img = new Image()
-    img.src = 'data:image/*;base64,' + data
+    img.src = 'data:' + type + ';base64,' + data
     img.onload = ->
       ratio = 1
       maxWidth = 1000
@@ -90,31 +84,37 @@ $ ->
           cvs.height = maxHeight
       ctx.clearRect(0, 0, cvs.width, cvs.height)
 
-      if parseInt(exif.Orientation) in [3,6,8]
+      if parseInt(exif.Orientation, 10) in [3,6,8]
         ctx.translate(cvs.width / 2, cvs.height / 2)
-        switch parseInt(exif.Orientation)
+        switch parseInt(exif.Orientation, 10)
           when 6 then ctx.rotate(Math.PI / 2)
           when 3 then ctx.rotate(Math.PI)
           when 8 then ctx.rotate(Math.Pi * 3/2)
         ctx.translate(-cvs.width / 2, -cvs.height / 2)
 
       ctx.drawImage(img, 0, 0, cvs.width, cvs.height)
-      Caman "#photo-canvas", ->
-        @.exposure(10)
+      Caman '#photo-canvas', ->
+        @exposure(10)
           .saturation(10)
           .colorize(255, 200, 0, 10)
           .noise(1)
           .vignette("40%", 20)
           .render ->
-            spinner.stop();
+            console.log 'finished'
+            spinner.stop()
             shutter.prop("disabled", false)
             captionBox.show()
             arrows.show()
 
   captureOrientation = ->
-    exif = EXIF.readFromBinaryFile(new BinaryFile(@result))
-    dataURI = base64_encode(@result)
-    populateCanvas(dataURI, exif)
+    shutter.prop("disabled", true)
+    spinner.spin(spinnerTarget[0])
+    shutter.animate
+      marginTop: window.innerHeight
+    , "swing", =>
+      exif = EXIF.readFromBinaryFile(new BinaryFile(@result))
+      dataURI = base64_encode(@result)
+      populateCanvas(dataURI, exif)
 
   postPhoto = ->
     console.log "getting location"
@@ -140,7 +140,7 @@ $ ->
       photo: base64
       lat: latitude
       long: longitude
-    , (data) ->
+    , ->
       spinner.stop()
       spinnerTarget.html "<i class=\"icon-ok-sign\" style=\"font-size: 300%; color: white;\"></i>"
       window.setTimeout (->

@@ -3,7 +3,7 @@
   $(function() {
     var e, t, n, r, i, s, o, u, a, f, l, c, h, p, d, v, m, g, y, b, w, E;
     r = $('input[type="file"]');
-    g = $(".shutter");
+    m = $(".shutter");
     i = $("canvas");
     t = $(".arrows");
     v = $(".share-box");
@@ -13,9 +13,10 @@
     o = $(".caption");
     a = $(".counter");
     e = $(".prompt");
-    w = $(".spinnerContainer");
-    E = 0;
-    b = {
+    b = $(".spinnerContainer");
+    w = 0;
+    E = void 0;
+    y = {
       lines: 12,
       length: 11,
       width: 4,
@@ -23,33 +24,34 @@
       color: "#FFF",
       hwaccel: !0
     };
-    y = Spinner(b);
+    g = new Spinner(y);
     if ("standalone" in window.navigator && !window.navigator.standalone) {
-      g.hide();
+      m.hide();
       e.show();
     }
-    g.on("touchend", function(e) {
+    m.on("touchend", function() {
       r.trigger("click");
       $.get("/twitter_config", function(e) {
         var t;
-        E = 140 - parseInt($.parseJSON(e).characters_reserved_per_media, 10);
-        s.attr("maxLength", E);
+        w = 140 - parseInt($.parseJSON(e).characters_reserved_per_media, 10);
+        s.attr("maxLength", w);
         t = s.val() === "" ? s.attr("placeholder") : s.val();
-        return a.text(t.length + "/" + E);
+        return a.text(t.length + "/" + w);
       });
       return _gaq.push([ "_trackEvent", "Photos", "Camera" ]);
     });
     s.on("keyup", function() {
       var e;
       e = s.val() === "" ? s.attr("placeholder") : s.val();
-      return a.text(e.length + "/" + E);
+      return a.text(e.length + "/" + w);
     });
-    r.on("change", function(e) {
-      var t, n;
-      t = this.files[0];
-      n = new FileReader;
-      n.onload = u;
-      return n.readAsBinaryString(t);
+    r.on("change", function() {
+      var e, t;
+      e = this.files[0];
+      E = e.type;
+      t = new FileReader;
+      t.onload = u;
+      return t.readAsBinaryString(e);
     });
     f = new Hammer($("body")[0]);
     f.onswipe = function(e) {
@@ -60,29 +62,21 @@
         }, "fast", function() {
           $(this).hide();
           o.hide();
-          y.spin(w[0]);
-          g.fadeOut("fast");
+          g.spin(b[0]);
+          m.fadeOut("fast");
           t.hide();
           return h();
         });
         return _gaq.push([ "_trackEvent", "Photos", "Tweet" ]);
       }
     };
-    m = function(e) {
-      y.spin(w[0]);
-      return g.animate({
-        marginTop: window.innerHeight
-      }, "swing", function() {});
-    };
     c = function(e, n) {
       var r, s, u;
-      g.prop("disabled", !0);
-      m();
       i.show();
       s = i[0];
       r = s.getContext("2d");
       u = new Image;
-      u.src = "data:image/*;base64," + e;
+      u.src = "data:" + E + ";base64," + e;
       return u.onload = function() {
         var e, i, a, f;
         a = 1;
@@ -98,9 +92,9 @@
           s.height = e;
         }
         r.clearRect(0, 0, s.width, s.height);
-        if ((f = parseInt(n.Orientation)) === 3 || f === 6 || f === 8) {
+        if ((f = parseInt(n.Orientation, 10)) === 3 || f === 6 || f === 8) {
           r.translate(s.width / 2, s.height / 2);
-          switch (parseInt(n.Orientation)) {
+          switch (parseInt(n.Orientation, 10)) {
            case 6:
             r.rotate(Math.PI / 2);
             break;
@@ -115,8 +109,9 @@
         r.drawImage(u, 0, 0, s.width, s.height);
         return Caman("#photo-canvas", function() {
           return this.exposure(10).saturation(10).colorize(255, 200, 0, 10).noise(1).vignette("40%", 20).render(function() {
-            y.stop();
-            g.prop("disabled", !1);
+            console.log("finished");
+            g.stop();
+            m.prop("disabled", !1);
             o.show();
             return t.show();
           });
@@ -124,10 +119,17 @@
       };
     };
     u = function() {
-      var e, t;
-      t = EXIF.readFromBinaryFile(new BinaryFile(this.result));
-      e = n(this.result);
-      return c(e, t);
+      var e = this;
+      m.prop("disabled", !0);
+      g.spin(b[0]);
+      return m.animate({
+        marginTop: window.innerHeight
+      }, "swing", function() {
+        var t, r;
+        r = EXIF.readFromBinaryFile(new BinaryFile(e.result));
+        t = n(e.result);
+        return c(t, r);
+      });
     };
     h = function() {
       var e, t;
@@ -157,18 +159,18 @@
         photo: e,
         lat: latitude,
         "long": longitude
-      }, function(e) {
-        y.stop();
-        w.html('<i class="icon-ok-sign" style="font-size: 300%; color: white;"></i>');
+      }, function() {
+        g.stop();
+        b.html('<i class="icon-ok-sign" style="font-size: 300%; color: white;"></i>');
         return window.setTimeout(function() {
-          w.html("");
+          b.html("");
           return p();
         }, 1e3);
       });
     };
     p = function() {
-      g.fadeIn("fast");
-      g.animate({
+      m.fadeIn("fast");
+      m.animate({
         marginTop: "50%"
       });
       i.css("margin-top", "0px");
