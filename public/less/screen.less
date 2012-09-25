@@ -173,7 +173,7 @@ textarea {
 }
 
 ::-webkit-input-placeholder{
-	color: @purple;
+	color: @gray;
 }
 
 .arrows {
@@ -185,4 +185,38 @@ textarea {
 	width: 25px;
 	height: 100px;
 	opacity: 0.5;
+}
+
+.small-circle {
+	position: absolute;
+	border-radius: 25px;
+	width: 50px;
+	height: 50px;
+	color: @purple;
+	text-align: center;
+	font-size: 200%;
+	background-color: transparent;
+	border: none;
+	padding: 0;
+	margin: 0;
+	line-height: 50px;
+}
+
+.about {
+	bottom: 0px;
+	left: 10px;
+
+	&:hover {
+		text-decoration: none;
+		color: @purple;
+	}
+}
+
+.share {
+	bottom: 0px;
+	right: 10px;
+
+	&:disabled {
+		display: none;
+	}
 }

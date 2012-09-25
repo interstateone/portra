@@ -2,8 +2,6 @@ $ ->
   camera = $("input[type=\"file\"]")
   shutter = $(".shutter")
   canvas = $("canvas")
-  arrows = $(".arrows")
-  shareBox = $(".share-box")
   share = $(".share")
   locateButton = $(".locate")
   caption = $("textarea")
@@ -30,6 +28,7 @@ $ ->
     camera.trigger("click")
     $.get "/twitter_config", (data) ->
       tweetLength = 140 - parseInt($.parseJSON(data).characters_reserved_per_media, 10)
+      tweetLength = 119 unless 0 < tweetLength < 140
       caption.attr("maxLength", tweetLength)
       status = if caption.val() is "" then caption.attr("placeholder") else caption.val()
       counter.text(status.length + "/" + tweetLength)
@@ -47,22 +46,20 @@ $ ->
     reader.onload = captureOrientation
     reader.readAsBinaryString(photo)
 
-  hammer = new Hammer($('body')[0])
-  hammer.onswipe = (event) ->
-    if event.direction is "up"
-      console.log "swiped up"
-      if canvas.is(":visible")
-        canvas.animate
-          marginTop: "-2000px"
-        , "fast", ->
-          $(this).hide()
-          captionBox.hide()
-          spinner.spin(spinnerTarget[0])
-          shutter.fadeOut("fast")
-          arrows.hide()
-          postPhoto()
+  share.on 'click', ->
+    console.log "tweeting photo"
+    if canvas.is(":visible")
+      canvas.animate
+        marginTop: "-2000px"
+      , "fast", =>
+        canvas.hide()
+        captionBox.hide()
+        spinner.spin(spinnerTarget[0])
+        shutter.fadeOut("fast")
+        postPhoto()
+        share.prop('disabled', true)
 
-      _gaq.push ["_trackEvent", "Photos", "Tweet"]
+    _gaq.push ["_trackEvent", "Photos", "Tweet"]
 
   populateCanvas = (data, exif) ->
     canvas.show()
@@ -97,14 +94,13 @@ $ ->
         @exposure(10)
           .saturation(10)
           .colorize(255, 200, 0, 10)
-          .noise(1)
           .vignette("40%", 20)
           .render ->
             console.log 'finished'
             spinner.stop()
             shutter.prop("disabled", false)
+            share.prop('disabled', false)
             captionBox.show()
-            arrows.show()
 
   captureOrientation = ->
     shutter.prop("disabled", true)
@@ -118,6 +114,8 @@ $ ->
 
   postPhoto = ->
     console.log "getting location"
+    latitude = null
+    longitude = null
     navigator.geolocation.getCurrentPosition (position) ->
       latitude = position.coords.latitude
       longitude = position.coords.longitude

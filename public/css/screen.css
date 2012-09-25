@@ -421,5 +421,8 @@ canvas{max-width:100%;}
 .caption{display:none;position:absolute;height:25%;width:100%;left:0;}
 .counter{color:#ff0000;}
 textarea{-webkit-appearance:none;background-color:transparent;border:none;color:#7a43b6;height:100%;}
-::-webkit-input-placeholder{color:#7a43b6;}
+::-webkit-input-placeholder{color:#555555;}
 .arrows{display:none;position:absolute;top:-50px;left:-12.5px;margin:30% 0 0 50%;width:25px;height:100px;opacity:0.5;}
+.small-circle{position:absolute;border-radius:25px;width:50px;height:50px;color:#7a43b6;text-align:center;font-size:200%;background-color:transparent;border:none;padding:0;margin:0;line-height:50px;}
+.about{bottom:0px;left:10px;}.about:hover{text-decoration:none;color:#7a43b6;}
+.share{bottom:0px;right:10px;}.share:disabled{display:none;}
