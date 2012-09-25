@@ -45,7 +45,8 @@ $ ->
     reader.onload = captureOrientation
     reader.readAsBinaryString(photo)
 
-  $("body").hammer().bind "swipe", (event) ->
+  hammer = new Hammer($('body')[0])
+  hammer.onswipe = (event) ->
     if event.direction is "up"
       console.log "swiped up"
       if canvas.is(":visible")
