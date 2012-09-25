@@ -1,7 +1,2 @@
 config.yaml
-public/.DS_Store
-public/css/.DS_Store
-public/fonts/.DS_Store
-public/fonts/font_awesome/.DS_Store
-public/js/.DS_Store
-public/less/.DS_Store
+.DS_Store
