@@ -42,8 +42,8 @@ $ ->
   camera.on "change", (event) ->
     photo = @files[0]
     reader = new FileReader()
-    reader.onload = showSpinner
-    reader.readAsDataURL(photo)
+    reader.onload = captureOrientation
+    reader.readAsBinaryString(photo)
 
   $("body").hammer().bind "swipe", (event) ->
     if event.direction is "up"
@@ -66,15 +66,15 @@ $ ->
     shutter.animate
       marginTop: window.innerHeight
     , "swing", ->
-      populateCanvas(event)
 
-  populateCanvas = (event) ->
+  populateCanvas = (data, exif) ->
     shutter.prop("disabled", true)
+    showSpinner()
     canvas.show()
     cvs = canvas[0]
     ctx = cvs.getContext("2d")
     img = new Image()
-    img.src = event.target.result
+    img.src = 'data:image/*;base64,' + data
     img.onload = ->
       ratio = 1
       maxWidth = 1000
@@ -88,6 +88,15 @@ $ ->
           cvs.width = maxHeight / img.height * img.width
           cvs.height = maxHeight
       ctx.clearRect(0, 0, cvs.width, cvs.height)
+
+      if parseInt(exif.Orientation) in [3,6,8]
+        ctx.translate(cvs.width / 2, cvs.height / 2)
+        switch parseInt(exif.Orientation)
+          when 6 then ctx.rotate(Math.PI / 2)
+          when 3 then ctx.rotate(Math.PI)
+          when 8 then ctx.rotate(Math.Pi * 3/2)
+        ctx.translate(-cvs.width / 2, -cvs.height / 2)
+
       ctx.drawImage(img, 0, 0, cvs.width, cvs.height)
       Caman "#photo-canvas", ->
         @.exposure(10)
@@ -100,6 +109,11 @@ $ ->
             shutter.prop("disabled", false)
             captionBox.show()
             arrows.show()
+
+  captureOrientation = ->
+    exif = EXIF.readFromBinaryFile(new BinaryFile(@result))
+    dataURI = base64_encode(@result)
+    populateCanvas(dataURI, exif)
 
   postPhoto = ->
     console.log "getting location"
@@ -140,3 +154,27 @@ $ ->
     captionBox.hide()
     caption.val("")
     camera.val("")
+
+  base64_encode = (data) ->
+    b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
+    i = 0
+    ac = 0
+    enc = ""
+    tmp_arr = []
+    return data unless data
+    loop # pack three octets into four hexets
+      o1 = data.charCodeAt(i++)
+      o2 = data.charCodeAt(i++)
+      o3 = data.charCodeAt(i++)
+      bits = o1 << 16 | o2 << 8 | o3
+      h1 = bits >> 18 & 0x3f
+      h2 = bits >> 12 & 0x3f
+      h3 = bits >> 6 & 0x3f
+      h4 = bits & 0x3f
+
+      # use hexets to index into b64, and append result to encoded string
+      tmp_arr[ac++] = b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4)
+      break unless i < data.length
+    enc = tmp_arr.join("")
+    r = data.length % 3
+    (if r then enc.slice(0, r - 3) else enc) + "===".slice(r or 3)
