@@ -10,12 +10,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
   <%= '<link href="' + versioned_stylesheet('screen') + '" rel="stylesheet">' %>
-  <script src="/js/jquery.js"></script>
-  <script src="/js/hammer.js"></script>
-  <script src="/js/jquery.hammer.js"></script>
-  <script src="/js/caman.full.pack.js"></script>
-  <script src="/js/spin.min.js"></script>
-  <%= '<script src="' + versioned_javascript('camera') + '"></script>' %>
 
   <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
@@ -77,5 +71,12 @@
   <div class="container">
     <%= yield %>
   </div> <!-- /container -->
+
+  <script src="/js/jquery.js"></script>
+  <script src="/js/hammer.js"></script>
+  <script src="/js/jquery.hammer.js"></script>
+  <script src="/js/caman.full.pack.js"></script>
+  <script src="/js/spin.min.js"></script>
+  <%= '<script src="' + versioned_javascript('camera') + '"></script>' %>
 </body>
 </html>
