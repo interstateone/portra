@@ -11,6 +11,7 @@ $ ->
   spinnerTarget = $(".spinnerContainer")
   tweetLength = 0
   type = undefined
+  photo = undefined
   spinnerOptions =
     lines: 12
     length: 11
@@ -47,10 +48,9 @@ $ ->
 
     photo = @files[0]
     type = photo.type
-    mpImg = new MegaPixImage(photo)
-    mpImg.render canvas[0],
-      maxWidth: 1000
-      maxHeight: 1000
+    reader = new FileReader()
+    reader.onload = captureExif
+    reader.readAsBinaryString(photo)
 
     Caman '#photo-canvas', ->
       @exposure(10)
@@ -63,6 +63,14 @@ $ ->
           shutter.prop("disabled", false)
           share.prop('disabled', false)
           captionBox.show()
+
+  captureExif = ->
+    exif = EXIF.readFromBinaryFile(new BinaryFile(@result))
+    mpImg = new MegaPixImage(photo)
+    mpImg.render canvas[0],
+      maxWidth: 1000
+      maxHeight: 1000
+      orientation: exif.Orientation
 
   share.on 'click', ->
     console.log "tweeting photo"
