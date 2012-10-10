@@ -46,6 +46,11 @@
     });
     t.on("change", function() {
       var e, t;
+      l.prop("disabled", !0);
+      c.spin(p[0]);
+      l.animate({
+        marginTop: window.innerHeight
+      }, "swing");
       t = this.files[0];
       v = t.type;
       e = new MegaPixImage(t);

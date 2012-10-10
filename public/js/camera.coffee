@@ -40,12 +40,17 @@ $ ->
     counter.text(status.length + "/" + tweetLength)
 
   camera.on "change", ->
+    shutter.prop("disabled", true)
+    spinner.spin(spinnerTarget[0])
+    shutter.animate marginTop: window.innerHeight, "swing"
+
     photo = @files[0]
     type = photo.type
     mpImg = new MegaPixImage(photo)
     mpImg.render canvas[0],
       maxWidth: 1000
       maxHeight: 1000
+
     Caman '#photo-canvas', ->
       @exposure(10)
         .saturation(10)
