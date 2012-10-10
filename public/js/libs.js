@@ -1103,6 +1103,7 @@ addEvent(window, "load", loadAllImages);
     }
     ctx.restore();
     tmpCanvas = tmpCtx = null;
+    $(canvas).trigger('rendered');
   }
 
   /**

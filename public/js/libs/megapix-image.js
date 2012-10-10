@@ -104,6 +104,7 @@
     }
     ctx.restore();
     tmpCanvas = tmpCtx = null;
+    $(canvas).trigger('rendered');
   }
 
   /**

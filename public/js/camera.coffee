@@ -52,6 +52,7 @@ $ ->
     reader.onload = captureExif
     reader.readAsBinaryString(photo)
 
+  canvas.on "rendered", ->
     Caman '#photo-canvas', ->
       @exposure(10)
         .saturation(10)

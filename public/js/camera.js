@@ -57,7 +57,9 @@
       g = a.type;
       e = new FileReader;
       e.onload = s;
-      e.readAsBinaryString(a);
+      return e.readAsBinaryString(a);
+    });
+    n.on("rendered", function() {
       return Caman("#photo-canvas", function() {
         return this.exposure(10).saturation(10).colorize(255, 200, 0, 10).vignette("40%", 20).render(function() {
           console.log("finished");
