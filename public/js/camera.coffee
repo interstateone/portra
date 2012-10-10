@@ -40,6 +40,7 @@ $ ->
     counter.text(status.length + "/" + tweetLength)
 
   camera.on "change", ->
+    canvas.show()
     shutter.prop("disabled", true)
     spinner.spin(spinnerTarget[0])
     shutter.animate marginTop: window.innerHeight, "swing"

@@ -46,6 +46,7 @@
     });
     t.on("change", function() {
       var e, t;
+      n.show();
       l.prop("disabled", !0);
       c.spin(p[0]);
       l.animate({
