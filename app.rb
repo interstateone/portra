@@ -40,6 +40,8 @@ class App < Sinatra::Base
     set :session_secret, settings.session_secret
   end
 
+  client = Twilio::REST::Client.new(ENV['TWILIO_SID'] || settings.twilio_sid, ENV['TWILIO_TOKEN'] || settings.twilio_token)
+
   if ENV['RACK_ENV'] == 'production'
     key = ENV['TWITTER_KEY'] || settings.twitter_key
     secret = ENV['TWITTER_SECRET'] || settings.twitter_secret
@@ -128,7 +130,7 @@ class App < Sinatra::Base
 
   before do
     # redirect non-'iPhone with iOS 6' browsers
-    unless ios6_iphone_browser? or request.path_info == '/about'
+    unless ios6_iphone_browser? or request.path_info == '/about' || request.path_info == '/sms'
       redirect '/about'
     end
   end
@@ -179,15 +181,23 @@ class App < Sinatra::Base
 
     access_token = prepare_access_token(current_user.token, current_user.secret)
     Tempfile.open(['photo', '.png']) do |temporaryFile|
-      data = params['photo'].split(',')[1]
+      data = params[:photo].split(',')[1]
       temporaryFile.write(Base64.decode64(data))
       temporaryFile.rewind
       puts response = access_token.multipart_post('https://api.twitter.com/1.1/statuses/update_with_media.json',
-                                                  :status => params['status'],
+                                                  :status => params[:status],
                                                   'media[]' => UploadIO.new(temporaryFile, 'image/png', temporaryFile.path),
-                                                  :lat => params['lat'],
-                                                  :long => params['long'])
+                                                  :lat => params[:lat],
+                                                  :long => params[:long])
     end
+  end
+
+  post '/sms' do
+    account = client.account
+    message = account.sms.messages.create :from => '+17806664693', :to => params[:number], :body => 'Try Portra: http://bit.ly/WP5tqY'
+
+    flash[:notice] = "Message sent"
+    redirect '/about'
   end
 
   get '/twitter_config' do

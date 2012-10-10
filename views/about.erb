@@ -1,6 +1,14 @@
 <div class="container-center">
   <div class="container-about">
     <img src="/demo.png" alt="Portra running on an iPhone 5">
+    <form action="/sms" method="post" style="text-align: center;">
+      <div class="control-group">
+        <div class="controls input-append">
+          <input type="tel" class="input-xlarge" id="number" name="number" placeholder="Send a link to your iPhone">
+          <button type="submit" class="btn">Send SMS</button>
+        </div>
+      </div>
+    </form>
     <h2>Portra</h2>
     <p>Portra is a proof-of-concept that implements iOS6's media upload capability, HMTL5 canvas and Twitter OAuth to build a quick little photo sharing web app.</p>
     <p>It was built in the course of a weekend by <a href="http://www.brandonevans.ca">Brandon Evans</a> to play around and learn new things.</p>

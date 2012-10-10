@@ -21,6 +21,8 @@ gem 'rest-client', :require => 'rest_client'
 gem 'omniauth-twitter'
 gem 'oauth-multipart'
 gem 'multipart-post'
+gem 'twilio-ruby'
+gem 'sinatra-flash', :require => 'sinatra/flash'
 
 group :test do
   gem 'rack-test', :require => 'rack/test'
