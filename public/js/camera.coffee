@@ -44,7 +44,11 @@ $ ->
     canvas.show()
     shutter.prop("disabled", true)
     spinner.spin(spinnerTarget[0])
-    shutter.animate marginTop: window.innerHeight, "swing"
+    if window.orientation is 0
+      newShutterHeight = window.innerHeight
+    else
+      newShutterHeight = window.innerWidth - shutter.height() / 4
+    shutter.animate marginTop: newShutterHeight, "swing"
 
     photo = @files[0]
     type = photo.type

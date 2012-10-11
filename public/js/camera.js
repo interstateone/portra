@@ -46,12 +46,13 @@
       return o.text(e.length + "/" + m);
     });
     t.on("change", function() {
-      var e;
+      var e, t;
       n.show();
       h.prop("disabled", !0);
       p.spin(v[0]);
+      window.orientation === 0 ? e = window.innerHeight : e = window.innerWidth - h.height() / 4;
       h.animate({
-        marginTop: window.innerHeight
+        marginTop: e
       }, "swing");
       a = this.files[0];
       g = a.type;
