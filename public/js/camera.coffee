@@ -22,7 +22,6 @@ $ ->
   spinner = new Spinner(spinnerOptions)
 
   if ("standalone" of window.navigator) and not window.navigator.standalone
-    shutter.hide()
     appPrompt.show()
 
   shutter.on "touchend", ->
@@ -53,7 +52,7 @@ $ ->
     photo = @files[0]
     type = photo.type
     reader = new FileReader()
-    reader.onload = captureExif
+    reader.onload = captureExifAndRender
     reader.readAsBinaryString(photo)
 
   canvas.on "rendered", ->
@@ -69,7 +68,7 @@ $ ->
           share.prop('disabled', false)
           captionBox.show()
 
-  captureExif = ->
+  captureExifAndRender = ->
     exif = EXIF.readFromBinaryFile(new BinaryFile(@result))
     mpImg = new MegaPixImage(photo)
     mpImg.render canvas[0],

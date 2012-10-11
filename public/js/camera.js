@@ -24,10 +24,7 @@
       hwaccel: !0
     };
     p = new Spinner(d);
-    if ("standalone" in window.navigator && !window.navigator.standalone) {
-      h.hide();
-      e.show();
-    }
+    "standalone" in window.navigator && !window.navigator.standalone && e.show();
     h.on("touchend", function() {
       t.trigger("click");
       $.get("/twitter_config", function(e) {
@@ -56,9 +53,9 @@
       }, "swing");
       a = this.files[0];
       g = a.type;
-      e = new FileReader;
-      e.onload = s;
-      return e.readAsBinaryString(a);
+      t = new FileReader;
+      t.onload = s;
+      return t.readAsBinaryString(a);
     });
     n.on("rendered", function() {
       return Caman("#photo-canvas", function() {

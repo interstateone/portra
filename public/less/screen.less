@@ -12,7 +12,6 @@
 
 // Base CSS
 @import "type.less";
-@import "font-awesome.less";
 @import "forms.less";
 @import "alerts.less";
 
@@ -102,13 +101,10 @@ canvas {
 
 .prompt {
 	display: none;
-	height: 100%;
+	position: absolute;
+	bottom: 10%;
 	width: 100%;
-	z-index: 100;
-	background-color: @yellow;
-	color: @purple;
-	vertical-align: middle;
-	padding-top: 50%;
+	color: @white;
 	text-align: center;
 
 	i {
@@ -195,7 +191,7 @@ textarea {
 }
 
 .logout {
-	bottom: 0px;
+	bottom: 10px;
 	left: 10px;
 
 	&:hover {
@@ -205,7 +201,7 @@ textarea {
 }
 
 .share {
-	bottom: 0px;
+	bottom: 10px;
 	right: 10px;
 
 	&:disabled {
