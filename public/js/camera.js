@@ -43,19 +43,21 @@
       return o.text(e.length + "/" + m);
     });
     t.on("change", function() {
-      var e, t;
-      n.show();
+      var e, t = this;
       h.prop("disabled", !0);
       p.spin(v[0]);
       window.orientation === 0 ? e = window.innerHeight : e = window.innerWidth - h.height() / 4;
-      h.animate({
+      return h.animate({
         marginTop: e
-      }, "swing");
-      a = this.files[0];
-      g = a.type;
-      t = new FileReader;
-      t.onload = s;
-      return t.readAsBinaryString(a);
+      }, "swing", function() {
+        var e;
+        n.show();
+        a = t.files[0];
+        g = a.type;
+        e = new FileReader;
+        e.onload = s;
+        return e.readAsBinaryString(a);
+      });
     });
     n.on("rendered", function() {
       return Caman("#photo-canvas", function() {

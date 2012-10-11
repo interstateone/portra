@@ -40,20 +40,19 @@ $ ->
     counter.text(status.length + "/" + tweetLength)
 
   camera.on "change", ->
-    canvas.show()
     shutter.prop("disabled", true)
     spinner.spin(spinnerTarget[0])
     if window.orientation is 0
       newShutterHeight = window.innerHeight
     else
       newShutterHeight = window.innerWidth - shutter.height() / 4
-    shutter.animate marginTop: newShutterHeight, "swing"
-
-    photo = @files[0]
-    type = photo.type
-    reader = new FileReader()
-    reader.onload = captureExifAndRender
-    reader.readAsBinaryString(photo)
+    shutter.animate marginTop: newShutterHeight, "swing", =>
+      canvas.show()
+      photo = @files[0]
+      type = photo.type
+      reader = new FileReader()
+      reader.onload = captureExifAndRender
+      reader.readAsBinaryString(photo)
 
   canvas.on "rendered", ->
     Caman '#photo-canvas', ->
