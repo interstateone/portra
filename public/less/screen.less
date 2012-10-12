@@ -21,7 +21,7 @@
 @import "progress-bars.less";
 
 @media (orientation: landscape) {
-	canvas {
+	canvas, #photo-image {
 		width: 320px;
 		left: 0;
 	}
@@ -140,8 +140,10 @@ canvas {
 	color: @white;
 }
 
-#photo-canvas {
+canvas, #photo-image {
 	display: none;
+	margin-bottom: 0;
+	padding-bottom: 0;
 }
 
 .spinnerContainer {
@@ -195,6 +197,7 @@ textarea {
 	width: 50px;
 	height: 50px;
 	border: none;
+	background-color: transparent;
 	padding: 0;
 	margin: 0;
 	line-height: 50px;

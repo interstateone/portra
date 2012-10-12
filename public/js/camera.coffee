@@ -2,6 +2,7 @@ $ ->
   camera = $("input[type=\"file\"]")
   shutter = $(".shutter")
   canvas = $("canvas")
+  photoPNG = $("#photo-image")
   share = $(".share")
   locateButton = $(".locate")
   caption = $("textarea")
@@ -67,6 +68,8 @@ $ ->
           shutter.prop("disabled", false)
           share.prop('disabled', false)
           captionBox.show()
+          photoPNG.prop("src", canvas[0].toDataURL()).show ->
+            canvas.hide()
 
   captureExifAndRender = ->
     exif = EXIF.readFromBinaryFile(new BinaryFile(@result))
@@ -82,7 +85,7 @@ $ ->
       canvas.animate
         marginTop: "-2000px"
       , "fast", =>
-        canvas.hide()
+        photoPNG.hide()
         captionBox.hide()
         spinner.spin(spinnerTarget[0])
         shutter.fadeOut("fast")
