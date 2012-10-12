@@ -317,6 +317,7 @@ canvas{max-width:100%;}
 .bottom-half-circle img{width:50px;height:50px;}
 .brand{display:inline-block;padding:12px 20px;font-size:30px;font-weight:200;line-height:1;font-family:"Futura-Medium",Georgia,"Times New Roman",Times,serif;text-transform:uppercase;letter-spacing:0.1em;}.brand:hover{text-decoration:none;}
 .prompt{display:none;position:absolute;bottom:10%;width:100%;color:#ffffff;text-align:center;}.prompt i{margin-bottom:20%;font-size:300%;}
+.prompt img{width:50px;height:50px;}
 .shutter{position:absolute;display:block;margin:50%;left:-50px;top:-50px;border-radius:100px;width:100px;height:100px;background-color:#7a43b6;color:#ffffff;}
 #photo-canvas{display:none;}
 .spinnerContainer{position:absolute;margin:70% 0 0 50%;left:-50px;top:-50px;text-align:center;width:100px;height:100px;}
@@ -325,7 +326,7 @@ canvas{max-width:100%;}
 textarea{-webkit-appearance:none;background-color:transparent;border:none;color:#7a43b6;height:100%;}
 ::-webkit-input-placeholder{color:#555555;}
 .arrows{display:none;position:absolute;top:-50px;left:-12.5px;margin:30% 0 0 50%;width:25px;height:100px;opacity:0.5;}
-.small-icon{position:absolute;border-radius:25px;width:50px;height:50px;border:none;padding:0;margin:0;line-height:50px;}
+.bottom-icon{position:absolute;border-radius:25px;width:50px;height:50px;border:none;padding:0;margin:0;line-height:50px;}
 .logout{bottom:10px;left:10px;}.logout:hover{text-decoration:none;color:#7a43b6;}
 .share{bottom:10px;right:10px;}.share:disabled{display:none;}
 .container-center{width:100%;text-align:center;}.container-center .container-about{margin:0 auto;max-width:500px;text-align:left;}
