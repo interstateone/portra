@@ -43,16 +43,17 @@
       return o.text(e.length + "/" + m);
     });
     t.on("change", function() {
-      var e, t = this;
+      var t, r = this;
+      e.hide();
       h.prop("disabled", !0);
       p.spin(v[0]);
-      window.orientation === 0 ? e = window.innerHeight : e = window.innerWidth - h.height() / 4;
+      window.orientation === 0 ? t = window.innerHeight : t = window.innerWidth - h.height() / 4;
       return h.animate({
-        marginTop: e
+        marginTop: t
       }, "swing", function() {
         var e;
         n.show();
-        a = t.files[0];
+        a = r.files[0];
         g = a.type;
         e = new FileReader;
         e.onload = s;

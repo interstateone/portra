@@ -40,6 +40,7 @@ $ ->
     counter.text(status.length + "/" + tweetLength)
 
   camera.on "change", ->
+    appPrompt.hide();
     shutter.prop("disabled", true)
     spinner.spin(spinnerTarget[0])
     if window.orientation is 0
